@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Uber Driver - Hoja de Ruta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: white;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+            -webkit-text-size-adjust: 100%;
+        }
+        .contract-header {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .legal-note {
+            font-size: 12px;
+            margin-bottom: 15px;
+            text-align: justify;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .section {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .field {
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+        .field-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        input {
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 8px 0;
+            font-size: 14px;
+            width: 100%;
+        }
+        input:focus {
+            outline: none;
+            border-bottom: 1px solid #000;
+        }
+        .readonly {
+            border-bottom: 1px dashed #ccc;
+            color: #666;
+            background-color: #f9f9f9;
+            padding: 8px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            min-width: 500px;
+        }
+        table td {
+            padding: 10px 8px;
+            vertical-align: top;
+            border-bottom: 1px solid #eee;
+        }
+        .table-header {
+            font-weight: bold;
+            background-color: #f5f5f5;
+        }
+        .footer {
+            font-size: 12px;
+            margin-top: 20px;
+            text-align: justify;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .generate-btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 14px 0;
+            width: 100%;
+            font-size: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .print-area {
+            display: none;
+            margin-top: 30px;
+            page-break-after: always;
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+            }
+            .no-print {
+                display: none;
+            }
+            .section {
+                border: 1px solid #000;
+                page-break-inside: avoid;
+            }
+            table {
+                border: 1px solid #000;
+            }
+        }
+        @media (min-width: 768px) {
+            .field {
+                flex-direction: row;
+                align-items: center;
+            }
+            .field-name {
+                width: 120px;
+                flex-shrink: 0;
+                margin-bottom: 0;
+            }
+            input {
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <div class="contract-header">CONTRATO</div>
+        <div class="legal-note">
+            En aquellos casos en los que la copia acreditativa del contrato
+            contenga los mismos datos exigibles para la hoja de ruta, no será
+            necesario cumplimentar ésta (Art. 24 ORDEN FOM 36/2008)
+        </div>
+
+        <div class="section">
+            <div class="section-title">Proveedor del servicio de transporte:</div>
+            <div class="field">
+                <span class="field-name">Nombre:</span>
+                <input type="text" id="providerName" value="KIPLAX NEGOCIOS S,L" class="readonly" readonly>
+            </div>
+            <div class="field">
+                <span class="field-name">NIF:</span>
+                <input type="text" id="providerNif" value="ESB67106112" class="readonly" readonly>
+            </div>
+            <div class="field">
+                <span class="field-name required-field">Matrícula:</span>
+                <input type="text" id="providerMatricula" placeholder="Ej: 7205-LZH">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Cliente:</div>
+            <div class="field">
+                <span class="field-name required-field">Nombre:</span>
+                <input type="text" id="clientName" placeholder="Ingrese nombre del pasajero">
+            </div>
+            <div class="field">
+                <span class="field-name">ID:</span>
+                <input type="text" id="clientId" value="Pedir al pasajero" class="readonly" readonly>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="field">
+                <span class="field-name">Fecha/lugar contrato:</span>
+                <input type="text" id="contractDate" class="readonly" readonly>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="table-container">
+                <table>
+                    <tr class="table-header">
+                        <td></td>
+                        <td>Lugar/Dirección</td>
+                        <td>Hora</td>
+                    </tr>
+                    <tr>
+                        <td>Origen</td>
+                        <td><input type="text" id="originAddress" placeholder="Carrer de Nápols 08210 Barberà del Vallès, ES"></td>
+                        <td><input type="text" id="originTime" class="readonly" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>Destino</td>
+                        <td><input type="text" id="destinationAddress" placeholder="Avinguda de la Comunitat Europea 08917 Badalona, ES"></td>
+                        <td><input type="text" id="destinationTime" class="readonly" readonly></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            Condiciones de la contratación del servicio y su normativa en la
+            página web de acceso a la solicitud, conforme a Ley 34/2002 de
+            Servicios de la Sociedad de la Información y de Comercio
+            Electrónico, habiendo sido aceptadas con la petición a través de la
+            app. Si el recorrido cambia, el precio se ajustará en base a las
+            tarifas establecidas.
+        </div>
+
+        <button class="generate-btn" id="generateBtn">GENERAR HOJA DE RUTA</button>
+    </div>
+
+    <div id="printArea" class="print-area"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date and time
+            const now = new Date();
+            const day = now.getDate();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            
+            document.getElementById('contractDate').value = `BARCELONA, ${day} del ${month} de ${year} ${hours}:${minutes}`;
+            
+            // Set current time for origin
+            document.getElementById('originTime').value = `${hours}:${minutes}`;
+            
+            // Set destination time (18 minutes later)
+            const destTime = new Date(now.getTime() + 18 * 60000);
+            const destHours = destTime.getHours().toString().padStart(2, '0');
+            const destMinutes = destTime.getMinutes().toString().padStart(2, '0');
+            document.getElementById('destinationTime').value = `${destHours}:${destMinutes}`;
+            
+            // Set focus to matrícula field
+            document.getElementById('providerMatricula').focus();
+            
+            // Generate button click handler
+            document.getElementById('generateBtn').addEventListener('click', function() {
+                const clientName = document.getElementById('clientName').value.trim();
+                const originAddress = document.getElementById('originAddress').value.trim();
+                const destinationAddress = document.getElementById('destinationAddress').value.trim();
+                const matricula = document.getElementById('providerMatricula').value.trim();
+                
+                if (!clientName || !originAddress || !destinationAddress || !matricula) {
+                    alert('Por favor complete todos los campos requeridos (marcados con *)');
+                    return;
+                }
+                
+                generateHojaDeRuta(clientName, originAddress, destinationAddress, matricula);
+            });
+            
+            // Handle Enter key to move between fields
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const form = document.querySelectorAll('input');
+                        const index = Array.from(form).indexOf(this);
+                        if (index < form.length - 1) {
+                            form[index + 1].focus();
+                        }
+                    }
+                });
+            });
+            
+            function generateHojaDeRuta(clientName, originAddress, destinationAddress, matricula) {
+                const printArea = document.getElementById('printArea');
+                const providerName = document.getElementById('providerName').value;
+                const providerNif = document.getElementById('providerNif').value;
+                const contractDate = document.getElementById('contractDate').value;
+                const originTime = document.getElementById('originTime').value;
+                const destinationTime = document.getElementById('destinationTime').value;
+                
+                printArea.innerHTML = `
+                    <div class="contract-header">CONTRATO</div>
+                    <div class="legal-note">
+                        En aquellos casos en los que la copia acreditativa del contrato
+                        contenga los mismos datos exigibles para la hoja de ruta, no será
+                        necesario cumplimentar ésta (Art. 24 ORDEN FOM 36/2008)
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Proveedor del servicio de transporte:</div>
+                        <div class="field">
+                            <span class="field-name">Nombre:</span>
+                            <span>${providerName}</span>
+                        </div>
+                        <div class="field">
+                            <span class="field-name">NIF:</span>
+                            <span>${providerNif}</span>
+                        </div>
+                        <div class="field">
+                            <span class="field-name">Matrícula:</span>
+                            <span>${matricula}</span>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Cliente:</div>
+                        <div class="field">
+                            <span class="field-name">Nombre:</span>
+                            <span>${clientName}</span>
+                        </div>
+                        <div class="field">
+                            <span class="field-name">ID:</span>
+                            <span>Pedir al pasajero</span>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="field">
+                            <span class="field-name">Fecha/lugar contrato:</span>
+                            <span>${contractDate}</span>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="table-container">
+                            <table>
+                                <tr class="table-header">
+                                    <td></td>
+                                    <td>Lugar/Dirección</td>
+                                    <td>Hora</td>
+                                </tr>
+                                <tr>
+                                    <td>Origen</td>
+                                    <td>${originAddress}</td>
+                                    <td>${originTime}</td>
+                                </tr>
+                                <tr>
+                                    <td>Destino</td>
+                                    <td>${destinationAddress}</td>
+                                    <td>${destinationTime}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="footer">
+                        Condiciones de la contratación del servicio y su normativa en la
+                        página web de acceso a la solicitud, conforme a Ley 34/2002 de
+                        Servicios de la Sociedad de la Información y de Comercio
+                        Electrónico, habiendo sido aceptadas con la petición a través de la
+                        app. Si el recorrido cambia, el precio se ajustará en base a las
+                        tarifas establecidas.
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px; font-size: 12px;">
+                        Documento generado el ${new Date().toLocaleString('es-ES')}
+                    </div>
+                `;
+                
+                // Show and print the document
+                printArea.style.display = 'block';
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
