@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Uber Driver - Hoja de Ruta</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -14,6 +17,8 @@
             font-size: 14px;
             line-height: 1.4;
             -webkit-text-size-adjust: 100%;
+            width: 100%;
+            overflow-x: hidden;
         }
         .contract-header {
             font-weight: bolder;
@@ -29,27 +34,32 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #f9f9f9;
+            width: 100%;
         }
         .section {
             margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 10px;
+            width: 100%;
         }
         .section-title {
             font-weight: bold;
             margin: 0 0 10px 0;
             padding-bottom: 5px;
             border-bottom: 1px solid #eee;
+            width: 100%;
         }
         .field {
             margin-bottom: 8px;
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
         .field-name {
             font-weight: bold;
             margin-bottom: 4px;
+            width: 100%;
         }
         input {
             border: none;
@@ -57,10 +67,11 @@
             padding: 8px 0;
             font-size: 14px;
             width: 100%;
+            background-color: transparent;
         }
         input:focus {
             outline: none;
-            border-bottom: 1px solid #000;
+            border-bottom: 2px solid #000;
         }
         .readonly {
             border-bottom: 1px dashed #ccc;
@@ -69,6 +80,7 @@
             padding: 8px 0;
         }
         .table-container {
+            width: 100%;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -77,12 +89,13 @@
             border-collapse: collapse;
             margin: 15px 0;
             border: 1px solid #ddd;
-            min-width: 500px;
+            min-width: 100%;
         }
         table td {
             padding: 10px 8px;
             vertical-align: top;
             border-bottom: 1px solid #eee;
+            word-break: break-word;
         }
         .table-header {
             font-weight: bold;
@@ -96,6 +109,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #f9f9f9;
+            width: 100%;
         }
         .generate-btn {
             background-color: #000;
@@ -111,13 +125,55 @@
         }
         .print-area {
             display: none;
-            margin-top: 30px;
-            page-break-after: always;
         }
         .required-field::after {
             content: " *";
             color: red;
         }
+
+        /* Improved mobile responsiveness */
+        @media (max-width: 767px) {
+            body {
+                padding: 10px;
+            }
+            table {
+                min-width: 100%;
+            }
+            table td {
+                padding: 8px 5px;
+                font-size: 13px;
+            }
+            input {
+                font-size: 14px;
+                padding: 6px 0;
+            }
+            .section {
+                padding: 8px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .field {
+                flex-direction: row;
+                align-items: center;
+            }
+            .field-name {
+                width: 150px;
+                flex-shrink: 0;
+                margin-bottom: 0;
+            }
+            input {
+                margin-left: 10px;
+                flex-grow: 1;
+            }
+        }
+
+        /* Print styles remain the same as before */
         @media print {
             body * {
                 visibility: hidden;
@@ -131,30 +187,94 @@
                 top: 0;
                 width: 100%;
                 display: block !important;
+                padding: 20px;
             }
             .no-print {
                 display: none;
             }
-            .section {
+            .print-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #000;
+            }
+            .print-title {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            .print-section {
+                margin-bottom: 15px;
                 border: 1px solid #000;
+                border-radius: 4px;
+                padding: 12px;
                 page-break-inside: avoid;
             }
-            table {
+            .print-section-title {
+                font-weight: bold;
+                margin: 0 0 10px 0;
+                padding-bottom: 5px;
+                border-bottom: 1px solid #000;
+                font-size: 15px;
+            }
+            .print-field {
+                display: flex;
+                margin-bottom: 8px;
+            }
+            .print-field-name {
+                font-weight: bold;
+                width: 150px;
+                flex-shrink: 0;
+            }
+            .print-field-value {
+                flex-grow: 1;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 5px;
+            }
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 15px 0;
                 border: 1px solid #000;
             }
-        }
-        @media (min-width: 768px) {
-            .field {
-                flex-direction: row;
-                align-items: center;
+            .print-table th {
+                background-color: #f0f0f0;
+                font-weight: bold;
+                text-align: left;
+                padding: 8px;
+                border: 1px solid #000;
             }
-            .field-name {
-                width: 120px;
-                flex-shrink: 0;
-                margin-bottom: 0;
+            .print-table td {
+                padding: 8px;
+                border: 1px solid #000;
             }
-            input {
-                margin-left: 10px;
+            .print-footer {
+                font-size: 11px;
+                margin-top: 30px;
+                text-align: justify;
+                padding: 10px;
+                border-top: 2px solid #000;
+                page-break-inside: avoid;
+            }
+            .print-signature {
+                margin-top: 40px;
+                display: flex;
+                justify-content: space-around;
+                page-break-inside: avoid;
+            }
+            .signature-line {
+                width: 200px;
+                border-top: 1px solid #000;
+                text-align: center;
+                padding-top: 5px;
+                font-size: 12px;
+            }
+            .print-date {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 11px;
+                color: #666;
             }
         }
     </style>
@@ -207,9 +327,9 @@
             <div class="table-container">
                 <table>
                     <tr class="table-header">
-                        <td></td>
+                        <td style="width: 80px;"></td>
                         <td>Lugar/Dirección</td>
-                        <td>Hora</td>
+                        <td style="width: 80px;">Hora</td>
                     </tr>
                     <tr>
                         <td>Origen</td>
@@ -234,7 +354,7 @@
             tarifas establecidas.
         </div>
 
-        <button class="generate-btn" id="generateBtn">GENERAR HOJA DE RUTA</button>
+        <!-- <button class="generate-btn" id="generateBtn">GENERAR HOJA DE RUTA</button> -->
     </div>
 
     <div id="printArea" class="print-area"></div>
@@ -301,55 +421,54 @@
                 const destinationTime = document.getElementById('destinationTime').value;
                 
                 printArea.innerHTML = `
-                    <div class="contract-header">CONTRATO</div>
-                    <div class="legal-note">
-                        En aquellos casos en los que la copia acreditativa del contrato
-                        contenga los mismos datos exigibles para la hoja de ruta, no será
-                        necesario cumplimentar ésta (Art. 24 ORDEN FOM 36/2008)
+                    <div class="print-header">
+                        <div class="print-title">HOJA DE RUTA - SERVICIO DE TRANSPORTE</div>
                     </div>
-
-                    <div class="section">
-                        <div class="section-title">Proveedor del servicio de transporte:</div>
-                        <div class="field">
-                            <span class="field-name">Nombre:</span>
-                            <span>${providerName}</span>
+                    
+                    <div class="print-section">
+                        <div class="print-section-title">INFORMACIÓN DEL PROVEEDOR</div>
+                        <div class="print-field">
+                            <div class="print-field-name">Empresa:</div>
+                            <div class="print-field-value">${providerName}</div>
                         </div>
-                        <div class="field">
-                            <span class="field-name">NIF:</span>
-                            <span>${providerNif}</span>
+                        <div class="print-field">
+                            <div class="print-field-name">NIF:</div>
+                            <div class="print-field-value">${providerNif}</div>
                         </div>
-                        <div class="field">
-                            <span class="field-name">Matrícula:</span>
-                            <span>${matricula}</span>
+                        <div class="print-field">
+                            <div class="print-field-name">Matrícula:</div>
+                            <div class="print-field-value">${matricula}</div>
                         </div>
                     </div>
-
-                    <div class="section">
-                        <div class="section-title">Cliente:</div>
-                        <div class="field">
-                            <span class="field-name">Nombre:</span>
-                            <span>${clientName}</span>
+                    
+                    <div class="print-section">
+                        <div class="print-section-title">INFORMACIÓN DEL CLIENTE</div>
+                        <div class="print-field">
+                            <div class="print-field-name">Nombre:</div>
+                            <div class="print-field-value">${clientName}</div>
                         </div>
-                        <div class="field">
-                            <span class="field-name">ID:</span>
-                            <span>Pedir al pasajero</span>
-                        </div>
-                    </div>
-                    <div class="section">
-                        <div class="field">
-                            <span class="field-name">Fecha/lugar contrato:</span>
-                            <span>${contractDate}</span>
+                        <div class="print-field">
+                            <div class="print-field-name">ID:</div>
+                            <div class="print-field-value">Pedir al pasajero</div>
                         </div>
                     </div>
-
-                    <div class="section">
-                        <div class="table-container">
-                            <table>
-                                <tr class="table-header">
-                                    <td></td>
-                                    <td>Lugar/Dirección</td>
-                                    <td>Hora</td>
+                    
+                    <div class="print-section">
+                        <div class="print-section-title">DETALLES DEL SERVICIO</div>
+                        <div class="print-field">
+                            <div class="print-field-name">Fecha y lugar:</div>
+                            <div class="print-field-value">${contractDate}</div>
+                        </div>
+                        
+                        <table class="print-table">
+                            <thead>
+                                <tr>
+                                    <th>Trayecto</th>
+                                    <th>Lugar/Dirección</th>
+                                    <th>Hora</th>
                                 </tr>
+                            </thead>
+                            <tbody>
                                 <tr>
                                     <td>Origen</td>
                                     <td>${originAddress}</td>
@@ -360,21 +479,32 @@
                                     <td>${destinationAddress}</td>
                                     <td>${destinationTime}</td>
                                 </tr>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <div class="footer">
-                        Condiciones de la contratación del servicio y su normativa en la
+                    
+                    <div class="print-footer">
+                        <p><strong>Nota legal:</strong> Condiciones de la contratación del servicio y su normativa en la
                         página web de acceso a la solicitud, conforme a Ley 34/2002 de
                         Servicios de la Sociedad de la Información y de Comercio
                         Electrónico, habiendo sido aceptadas con la petición a través de la
                         app. Si el recorrido cambia, el precio se ajustará en base a las
-                        tarifas establecidas.
+                        tarifas establecidas.</p>
                     </div>
                     
-                    <div style="text-align: center; margin-top: 20px; font-size: 12px;">
-                        Documento generado el ${new Date().toLocaleString('es-ES')}
+                    <div class="print-signature">
+                        <div class="signature-line">Firma del conductor</div>
+                        <div class="signature-line">Firma del pasajero</div>
+                    </div>
+                    
+                    <div class="print-date">
+                        Documento generado el ${new Date().toLocaleString('es-ES', { 
+                            day: '2-digit', 
+                            month: '2-digit', 
+                            year: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        })}
                     </div>
                 `;
                 
